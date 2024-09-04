@@ -95,6 +95,9 @@ const FormsTable = () => {
   const handleStep = () => {
     navigate("/steps");
   }
+  const handleAuthFeature = () => {
+    navigate("/authfeature")
+  }
 
   return (
     <Box sx={{ position: 'relative' }}>
@@ -102,9 +105,17 @@ const FormsTable = () => {
         variant="contained"
         color="primary"
         onClick={handleStep}
-        sx={{ position: 'absolute', top: 16, right: 236 }}
+        sx={{ position: 'absolute', top: 16, right: 436 }}
       >
        Go To Steps
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleAuthFeature}
+        sx={{ position: 'absolute', top: 16, right: 210 }}
+      >
+       AddAuth
       </Button>
       <Button
         variant="contained"

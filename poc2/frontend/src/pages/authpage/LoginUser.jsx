@@ -90,26 +90,67 @@ const LoginUser = () => {
     }
   };
 
+  // const handleOtpSubmit = async (event) => {
+  //   event.preventDefault();
+
+  //   const otpData = { email, otp };
+
+  //   try {
+  //     const response = await axios.post(`${AuthApi}/api/verifyotp`, otpData, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+
+  //     const { message, token } = response.data;
+  //     console.log("Message:", message);
+
+  //     if (token) {
+  //       console.log("tokens are: ",token)
+  //       localStorage.setItem("userToken", token);
+
+  //       navigate("/getAllForms");
+  //       window.location.reload();
+  //       setDialogOpen(false);
+  //     } else {
+  //       alert("Token not received. OTP verification failed.");
+  //     }
+  //   } catch (error) {
+  //     if (error.response) {
+  //       alert("OTP verification failed: " + error.response.data.error);
+  //     } else {
+  //       alert("OTP verification failed: " + error.message);
+  //     }
+  //   }
+  // };
+
   const handleOtpSubmit = async (event) => {
     event.preventDefault();
-
+  
     const otpData = { email, otp };
-
+  
     try {
       const response = await axios.post(`${AuthApi}/api/verifyotp`, otpData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-
-      const { message, token } = response.data;
+  
+      const { message, token, userRole } = response.data;
+      console.log("response data are: ",response.data)
       console.log("Message:", message);
-
+  
       if (token) {
-        console.log("tokens are: ",token)
+        console.log("tokens are: ", token);
         localStorage.setItem("userToken", token);
-
-        navigate("/getAllForms");
+         console.log("user rolesssss are: ",userRole)
+        // Navigate based on userRole
+        if (userRole === 'other' || userRole === 'user') {
+          navigate("/stepSummary");
+        } else {
+         navigate("/getAllForms");
+        }
+        
         window.location.reload();
         setDialogOpen(false);
       } else {
@@ -123,6 +164,7 @@ const LoginUser = () => {
       }
     }
   };
+   
 
   const handleDialogClose = () => {
     setDialogOpen(false);

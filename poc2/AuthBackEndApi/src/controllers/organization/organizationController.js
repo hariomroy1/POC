@@ -82,6 +82,19 @@ class OrganizationController {
       }
     }
   }
-}
+
+ 
+
+  async getAllOrganizations(req, res) {
+    try {
+      const organizations = await this.organizationService.getAllOrganizations();
+      console.log("organizations:",organizations)
+      res.status(200).json(organizations);
+    } catch (error) {
+      console.log("errors are:",error)
+      res.status(500).json({ error: error.message });
+    }
+  };
+} 
 
 module.exports = OrganizationController;

@@ -1,113 +1,95 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import axiosInstance from "../../utils/axiosInstance"
 
 const Steps = () => {
-  const [steps, setSteps] = useState([{ label: 'Step 1', value: '' }]); // Default label "Step 1"
-  const [currentStep, setCurrentStep] = useState(0); // Track current step
+  const [stepName, setStepName] = useState(''); // Single step name input
+  const [orgId, setOrgId] = useState(''); // State for organization ID
+  const [userId, setUserId] = useState(''); // State for user ID
   const navigate = useNavigate();
 
-  // Handle input change for step
-  const handleStepChange = (index, event) => {
-    const updatedSteps = [...steps];
-    updatedSteps[index][event.target.name] = event.target.value;
-    setSteps(updatedSteps);
+  // Handle the input change for stepName
+  const handleStepChange = (event) => {
+    setStepName(event.target.value);
   };
 
-  // Add a new step with default label
-  const addStep = () => {
-    const newStepLabel = `Step ${steps.length + 1}`;
-    setSteps([...steps, { label: newStepLabel, value: '' }]);
-  };
+  // Handle the API call to create a step
+  const handleSubmit = async () => {
+    try {
+      // Make a POST request to the API to save the step
+      const response = await axiosInstance.post('http://localhost:9000/api/createStep', {
+        orgId,    // Organization ID
+        userId,   // User ID
+        stepName  // Step name
+      });
 
-  // Handle Next step
-  const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      addStep(); // Add a new step when the user clicks next and reaches the last step
-      setCurrentStep(currentStep + 1);
+      console.log('Step created successfully:', response.data);
+      // Optionally navigate to a different page after submission
+      
+      //navigate('/stepSummary', { state: { stepName, orgId, userId } });
+    } catch (error) {
+      console.error('Error submitting step:', error);
+      alert('Error submitting step: ' + error.message); // Notify user of error
     }
   };
 
-  // Handle Previous step
-  const handlePrevious = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  // Submit form and navigate to summary page
-  const handleSubmit = () => {
-    console.log("Form submitted:", steps);
-    navigate("/stepSummary", { state: { steps } });
-  };
-
-  // Navigation for back and next
+  // Navigation for back
   const handleBack = () => {
-    navigate("/getAllForms");
+    navigate('/getAllForms');
   };
 
+  const handleSummarySteps = () => {
+    navigate("/stepSummary")
+  }
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Dynamic Step Form
+        Create Step
       </Typography>
       <Button onClick={handleBack}>Go Back</Button>
 
-      {/* Render Current Step */}
-      {steps[currentStep] && (
-        <Box sx={{ mb: 4 }}>
-          <TextField
-            label="Step Label"
-            name="label"
-            value={steps[currentStep].label}
-            onChange={(event) => handleStepChange(currentStep, event)}
-            fullWidth
-            margin="normal"
-            disabled // Disable editing of the step label since it's auto-assigned
-          />
-          <TextField
-            label="Step Value"
-            name="value"
-            value={steps[currentStep].value}
-            onChange={(event) => handleStepChange(currentStep, event)}
-            fullWidth
-            margin="normal"
-          />
-        </Box>
-      )}
+      {/* Input fields for Organization ID and User ID */}
+      <TextField
+        label="Organization ID"
+        value={orgId}
+        onChange={(event) => setOrgId(event.target.value)}
+        fullWidth
+        margin="normal"
+      />
+      <TextField
+        label="User ID"
+        value={userId}
+        onChange={(event) => setUserId(event.target.value)}
+        fullWidth
+        margin="normal"
+      />
 
-      {/* Buttons for Adding Steps and Navigating */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        {/* <Button
-          variant="outlined"
-          onClick={addStep}
-          disabled={steps.length >= 10} // Limiting number of steps (if needed)
-        >
-          Add Step
-        </Button> */}
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Submit All Steps
-        </Button>
-      </Box>
+      {/* Input field for Step Name */}
+      <TextField
+        label="Step Name"
+        value={stepName}
+        onChange={handleStepChange}
+        fullWidth
+        margin="normal"
+      />
 
-      {/* Navigation Buttons */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      {/* Submit Button */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
         <Button
           variant="contained"
-          color="secondary"
-          onClick={handlePrevious}
-          disabled={currentStep === 0}
+          color="primary"
+          onClick={handleSubmit}
         >
-          Previous
+          Submit Step
         </Button>
         <Button
           variant="contained"
           color="primary"
-          onClick={handleNext}
+          onClick={handleSummarySteps}
         >
-          {currentStep === steps.length - 1 ? "Add & Next" : "Next"}
+          Summary Step
         </Button>
       </Box>
     </Box>

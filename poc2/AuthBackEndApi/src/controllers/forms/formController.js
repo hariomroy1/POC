@@ -64,6 +64,16 @@ class FormController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  async submitData(req, res) {
+    try {
+      const response = await authService.saveSteps(req.body);
+      return res.status(200).json(response);
+    } catch (error) {
+      console.error("Error in submitData:", error);
+      return res.status(400).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = FormController;

@@ -65,6 +65,19 @@ class OrganizationService {
       throw error;
     }
   }
+   async getAllOrganizations (){
+    return await this.organizationRepository.getAll();
+  };
+  // async getAllOrganizations() {
+  //   try {
+  //     // Fetch all records from the Organization table
+  //     const organizations = await this.organizationRepository.getAllOrganizationList();
+  //     console.log("organizations ",organizations)
+  //     return organizations;
+  //   } catch (error) {
+  //     throw new Error('Error fetching organizations: ' + error.message);
+  //   }
+  // }
 }
 
 module.exports = OrganizationService;
